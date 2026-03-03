@@ -1,0 +1,13 @@
+{
+  "base": "game/stage/compileRuntimeFromV2.ts",
+  "dump": [
+    {
+      "stageId": 3,
+      "totalBlocks": 717,
+      "derivedRemaining": 602,
+      "keyCount": 5,
+      "spawnerBoxCount": 8,
+      "spawnerQueue": 120
+    }
+  ]
+}

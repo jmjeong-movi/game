@@ -1,24 +1,26 @@
 {
   "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
+  "validationTrust": "UNTRUSTED_ENGINE_BLOCKED",
+  "enginePath": "/workspace/game/_nstage/stage-tool-v9/src/validator_tools/engine/sim_equivalent.js",
   "results": [
     {
       "stageId": 1,
       "status": "UNSOLVED",
-      "reason": "SIM_ENGINE_NOT_LINKED",
+      "reason": "SIM_ENGINE_NOT_REAL",
       "failStep": -1,
       "opsUsed": []
     },
     {
       "stageId": 2,
       "status": "UNSOLVED",
-      "reason": "SIM_ENGINE_NOT_LINKED",
+      "reason": "SIM_ENGINE_NOT_REAL",
       "failStep": -1,
       "opsUsed": []
     },
     {
       "stageId": 3,
       "status": "UNSOLVED",
-      "reason": "SIM_ENGINE_NOT_LINKED",
+      "reason": "SIM_ENGINE_NOT_REAL",
       "failStep": -1,
       "opsUsed": []
     }

@@ -1,0 +1,128 @@
+{
+  "summary": {
+    "total": 3,
+    "solved": 3,
+    "stuck": 0,
+    "unknown": 0,
+    "error": 0
+  },
+  "results": [
+    {
+      "id": 1,
+      "status": "SOLVED",
+      "steps": 50,
+      "shotsFired": 200,
+      "autoFixUsed": 0,
+      "metrics": {
+        "row0Entropy": 0,
+        "row0MaxFrac": 0,
+        "row0Counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "ammoByColor": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "status": "SOLVED",
+      "steps": 1283,
+      "shotsFired": 2220,
+      "autoFixUsed": 0,
+      "metrics": {
+        "row0Entropy": 0,
+        "row0MaxFrac": 0,
+        "row0Counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "ammoByColor": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "status": "SOLVED",
+      "steps": 285,
+      "shotsFired": 482,
+      "autoFixUsed": 0,
+      "metrics": {
+        "row0Entropy": 0,
+        "row0MaxFrac": 0,
+        "row0Counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "ammoByColor": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  ]
+}

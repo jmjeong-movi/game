@@ -1,0 +1,42 @@
+{
+  "summary": {
+    "total": 120,
+    "solved": 0,
+    "stuck": 120,
+    "unknown": 0,
+    "error": 0,
+    "elapsedMs": 100876
+  },
+  "byBlockCount": {
+    "500": {
+      "total": 30,
+      "solved": 0
+    },
+    "1000": {
+      "total": 30,
+      "solved": 0
+    },
+    "1500": {
+      "total": 30,
+      "solved": 0
+    },
+    "2000": {
+      "total": 30,
+      "solved": 0
+    }
+  },
+  "byDifficulty": {
+    "easy": {
+      "total": 40,
+      "solved": 0
+    },
+    "normal": {
+      "total": 40,
+      "solved": 0
+    },
+    "hard": {
+      "total": 40,
+      "solved": 0
+    }
+  }
+}

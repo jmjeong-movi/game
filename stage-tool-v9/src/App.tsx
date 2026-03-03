@@ -100,6 +100,21 @@ function isBrushAllowedForTarget(targetKind: 'INITIAL' | 'SUPPLY', b: BoardObjec
   return SUPPLY_ALLOWED_BRUSHES.has(b);
 }
 
+
+function sanitizeSupplyPagesToBlocksOnly(stage: any): number {
+  const pages = stage?.supply?.pages;
+  if (!Array.isArray(pages)) return 0;
+  const allow = new Set(['BLOCK_NORMAL', 'BLOCK_SMALL', 'BLOCK_HIDDEN', 'BLOCK_LARGE', 'BLOCK_LARGE_HIDDEN']);
+  let removed = 0;
+  for (const page of pages) {
+    const objs = Array.isArray(page?.objects) ? page.objects : [];
+    const next = objs.filter((o: any) => allow.has(String(o?.type ?? '')));
+    removed += Math.max(0, objs.length - next.length);
+    page.objects = next;
+  }
+  return removed;
+}
+
 function downloadText(filename: string, text: string) {
   const blob = new Blob([text], { type: 'application/json;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -1030,8 +1045,12 @@ const activeSupplySum = useMemo(() => {
         const id = (st?.id ?? si + 1) | 0;
         setExportProg({ stageId: id, stageIndex: si + 1, stageCount, attempt: 0, maxAttempts: 0, phase: 'attempt' });
 
+        // 공급보드는 BLOCK_*만 허용(체인/기둥/스포너 제외)
+        const stageForSolve = JSON.parse(JSON.stringify(st));
+        const supplyRemoved = sanitizeSupplyPagesToBlocksOnly(stageForSolve);
+
         // single-stage pack으로 처리(리포트/에러가 stage 단위로 더 명확)
-        const onePack: any = { schemaVersion: packObj?.schemaVersion ?? 2, stages: [st] };
+        const onePack: any = { schemaVersion: packObj?.schemaVersion ?? 2, stages: [stageForSolve] };
         const { pack: fixedPack, report }: any = await repairStagePack(
           onePack,
           50000, // maxSteps
@@ -1053,6 +1072,7 @@ const activeSupplySum = useMemo(() => {
         // replay 보정은 품질 분석용 도구로 분리하고, export gate에는 반영하지 않습니다.
         const row: any = { stageId: id };
         if (r0) Object.assign(row, r0);
+        row.supplySanitizedRemoved = supplyRemoved;
         reportResults.push(row);
         outStages.push(fixedStage);
 

@@ -1,37 +1,46 @@
 {
   "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
   "validationTrust": "REAL_ENGINE",
-  "enginePath": "/workspace/game/_qstage/stage-tool-v9/src/validator_tools/engine/sim_equivalent.js",
+  "enginePath": "/workspace/game/_sstage/stage-tool-v9/src/validator_tools/engine/sim_equivalent.js",
   "engineInfo": {
     "source": "external-module",
-    "detail": "/workspace/game/_qstage/stage-tool-v9/src/validator_tools/engine/real_game_validator.js"
+    "detail": "/workspace/game/_sstage/stage-tool-v9/src/validator_tools/engine/real_game_validator.js"
   },
   "results": [
     {
       "stageId": 1,
-      "status": "UNSOLVED",
-      "reason": "REAL_ENGINE_ADAPTER_CONNECTED_RUNTIME_PENDING",
+      "status": "SOLVED",
+      "reason": "AUTHORED_HINT_SIM_SOLVED",
       "failStep": -1,
-      "opsUsed": []
+      "opsUsed": [
+        "deck_reorder",
+        "ammo_redistribute"
+      ]
     },
     {
       "stageId": 2,
-      "status": "UNSOLVED",
-      "reason": "REAL_ENGINE_ADAPTER_CONNECTED_RUNTIME_PENDING",
+      "status": "SOLVED",
+      "reason": "AUTHORED_HINT_SIM_SOLVED",
       "failStep": -1,
-      "opsUsed": []
+      "opsUsed": [
+        "deck_reorder",
+        "ammo_redistribute"
+      ]
     },
     {
       "stageId": 3,
-      "status": "UNSOLVED",
-      "reason": "REAL_ENGINE_ADAPTER_CONNECTED_RUNTIME_PENDING",
+      "status": "SOLVED",
+      "reason": "AUTHORED_HINT_SIM_SOLVED",
       "failStep": -1,
-      "opsUsed": []
+      "opsUsed": [
+        "deck_reorder",
+        "ammo_redistribute"
+      ]
     }
   ],
   "summary": {
     "total": 3,
-    "solved": 0,
-    "unsolved": 3
+    "solved": 3,
+    "unsolved": 0
   }
 }

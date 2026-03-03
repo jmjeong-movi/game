@@ -31,5 +31,5 @@
       "SIM_ENGINE_NOT_REAL": 120
     }
   },
-  "nextAction": "SET REAL_GAME_VALIDATOR_MODULE to real engine and revalidate"
+  "nextAction": "RUN scripts/real_engine_preflight.sh then revalidate"
 }

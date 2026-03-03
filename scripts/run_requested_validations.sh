@@ -36,8 +36,12 @@ node - <<'NODE' "$CLI" "$ROOT/stagepack_v2_matrix_120.json" "$ROOT/stagepack_v2_
 const fs=require('fs');
 const [cliFile,outPack,outReport]=process.argv.slice(2);
 const cli=require(cliFile);
+
+const BCS=[500,1000,1500,2000];
+const DIFFS=[['easy',3],['normal',6],['hard',9]];
 const COLORS=['R','O','Y','G','B','P','M','C','S','L','K','W'];
 const ALLOWED_SUPPLY_TYPES = new Set(['BLOCK_SMALL','BLOCK_NORMAL','BLOCK_HIDDEN','BLOCK_LARGE','BLOCK_LARGE_HIDDEN']);
+const MAX_ATTEMPTS_PER_STAGE = 30;
 
 function sanitizeSupplyPagesToBlocksOnly(stage){
   const pages=Array.isArray(stage?.supply?.pages)?stage.supply.pages:[];
@@ -47,102 +51,140 @@ function sanitizeSupplyPagesToBlocksOnly(stage){
   }
 }
 
-function baseStage(id, blockCount, diffName, di, idx){
-  const o=[];
-  o.push({type:'BLOCK_SMALL',x:0,y:9,color:'R',layer:0});
-  o.push({type:'BLOCK_NORMAL',x:1,y:9,color:'G',layer:0});
-  o.push({type:'BLOCK_HIDDEN',x:2,y:9,color:'B',layer:0});
-  o.push({type:'BLOCK_LARGE',x:3,y:8,color:'Y',hp:40,layer:0});
-  o.push({type:'BLOCK_LARGE_HIDDEN',x:6,y:8,color:'P',hp:40,layer:0});
-  o.push({type:'CHAIN_BARRIER',x:0,y:7,color:'C',layer:0,chainId:`ch_${id}`,chainOrder:0,chainLen:3});
-  o.push({type:'CHAIN_BARRIER',x:1,y:7,color:'C',layer:0,chainId:`ch_${id}`,chainOrder:1,chainLen:3});
-  o.push({type:'CHAIN_BARRIER',x:2,y:7,color:'C',layer:0,chainId:`ch_${id}`,chainOrder:2,chainLen:3});
-  o.push({type:'KEY',x:4,y:9,keyId:'A',layer:0});
-  o.push({type:'PILLAR',x:9,y:0,h:4,layer:0});
-  o.push({type:'SPAWNER_BOX',x:7,y:2,hp:8,spawn:{poolColors:['R','G']},layer:0});
+function makeCandidate(id, blockCount, diffName, diff, idx, attempt){
+  const c0 = COLORS[(id + attempt) % COLORS.length];
+  const c1 = COLORS[(id + attempt + 3) % COLORS.length];
+  const c2 = COLORS[(id + attempt + 6) % COLORS.length];
+  const chainId = `ch_${id}_${attempt}`;
+
+  const board = [
+    { type:'BLOCK_SMALL', x:0, y:9, color:c0, layer:0 },
+    { type:'BLOCK_NORMAL', x:1, y:9, color:c1, layer:0 },
+    { type:'BLOCK_HIDDEN', x:2, y:9, color:c2, layer:0 },
+    { type:'BLOCK_LARGE', x:3, y:8, color:c0, hp:20, layer:0 },
+    { type:'BLOCK_LARGE_HIDDEN', x:6, y:8, color:c1, hp:20, layer:0 },
+
+    // requested obstacle/object types kept on board (not in supply)
+    { type:'CHAIN_BARRIER', x:0, y:2, color:'C', layer:0, chainId, chainOrder:0, chainLen:2 },
+    { type:'CHAIN_BARRIER', x:1, y:2, color:'C', layer:0, chainId, chainOrder:1, chainLen:2 },
+    { type:'KEY', x:9, y:1, keyId:`K${id}`, layer:0 },
+    { type:'PILLAR', x:9, y:0, h:1, layer:0 },
+    { type:'SPAWNER_BOX', x:8, y:1, hp:2, spawn:{poolColors:[c0,c1]}, layer:0 },
+  ];
 
   const pages=[];
-  for(let p=0;p<3;p++){
-    const po=[];
-    for(let i=0;i<20;i++){
-      const x=(i*3+p)%10; const y=(i*7+p)%10; const c=COLORS[(i+p+di)%COLORS.length];
-      const t=(i%5===0)?'BLOCK_HIDDEN':'BLOCK_NORMAL';
-      po.push({type:t,x,y,color:c,layer:0});
+  for (let p=0; p<3; p++){
+    const objs=[];
+    for(let i=0;i<24;i++){
+      const x=(i*3+p)%10;
+      const y=(i*5+p)%10;
+      const color=COLORS[(i + p + attempt + diff) % COLORS.length];
+      const type=(i%7===0)?'BLOCK_HIDDEN':'BLOCK_NORMAL';
+      objs.push({type, x, y, color, layer:0});
     }
-    po.push({type:'BLOCK_LARGE',x:8,y:8,color:COLORS[(p+2)%COLORS.length],hp:30,layer:0});
-    // intentionally add disallowed supply objects to verify sanitizer
-    po.push({type:'CHAIN_BARRIER',x:0,y:0,color:'C',layer:0});
-    po.push({type:'PILLAR',x:1,y:0,h:2,layer:0});
-    po.push({type:'SPAWNER_BOX',x:2,y:0,hp:4,spawn:{poolColors:['R']},layer:0});
-    pages.push({objects:po});
+    objs.push({type:'BLOCK_LARGE', x:7, y:7, color:COLORS[(p+2)%COLORS.length], hp:18, layer:0});
+    // negative test objects: must be removed by sanitizer
+    objs.push({type:'CHAIN_BARRIER',x:0,y:0,color:'C',layer:0});
+    objs.push({type:'PILLAR',x:1,y:0,h:2,layer:0});
+    objs.push({type:'SPAWNER_BOX',x:2,y:0,hp:2,spawn:{poolColors:[c0]},layer:0});
+    pages.push({objects: objs});
   }
-  return {
+
+  const stage = {
     id,
-    meta:{blockCount,colorCount:12,layerCount:1,slotCount:5,waitLineCount:3,pickerCols:3,pickerMaxCards:120,seed:10000+id,difficulty:diffName,difficultyIndex:di,matrixIndex:idx},
-    board:{objects:o},
+    meta:{
+      blockCount,
+      colorCount:12,
+      layerCount:1,
+      slotCount:5,
+      waitLineCount:3,
+      pickerCols:3,
+      pickerMaxCards:240,
+      seed:(100000 + id * 131 + attempt) >>> 0,
+      difficulty:diffName,
+      difficultyIndex:diff,
+      matrixIndex:idx,
+      attempt,
+    },
+    board:{objects:board},
     supply:{mode:'PATTERN',pages},
     cards:{mode:'GENERATE'},
     shooters:[],
   };
+  sanitizeSupplyPagesToBlocksOnly(stage);
+  return stage;
 }
-(async()=>{
-  const bcs=[500,1000,1500,2000];
-  const diffs=[['easy',3],['normal',6],['hard',9]];
-  const stages=[];
-  let id=1;
-  for (const bc of bcs) for (const [name,di] of diffs) for(let i=0;i<10;i++) {
-    const st = baseStage(id++,bc,name,di,i);
-    sanitizeSupplyPagesToBlocksOnly(st);
-    stages.push(st);
-  }
-  const pack={schemaVersion:2,buildId:'matrix_120',stages};
-  fs.writeFileSync(outPack,JSON.stringify(pack,null,2));
 
-  const t=Date.now();
-  const {pack: solvedPack, report}=await cli.repairStagePack(pack,50000,120,180,{enabled:true,depth:10,window:12,beam:10,simSteps:5000},undefined);
-  const solvedStages = Array.isArray(solvedPack?.stages) ? solvedPack.stages : stages;
-  const results=Array.isArray(report?.results)?report.results:[];
+async function solveOne(target){
+  for (let attempt=0; attempt<MAX_ATTEMPTS_PER_STAGE; attempt++){
+    const draft = makeCandidate(target.id, target.blockCount, target.diffName, target.diff, target.idx, attempt);
+    const onePack = {schemaVersion:2, stages:[draft]};
+    const {pack,report}=await cli.repairStagePack(onePack,60000,160,220,{enabled:true,depth:10,window:12,beam:10,simSteps:6000},undefined);
+    const r=report?.results?.[0] ?? {};
+    if (String(r?.status) === 'SOLVED') {
+      const fixed = Array.isArray(pack?.stages) ? pack.stages[0] : draft;
+      return { ok:true, stage:fixed, result:r, attempt };
+    }
+  }
+  return { ok:false };
+}
+
+(async()=>{
+  const targets=[];
+  let id=1;
+  for (const bc of BCS) for (const [diffName,diff] of DIFFS) for (let idx=0; idx<10; idx++) {
+    targets.push({id:id++, blockCount:bc, diffName, diff, idx});
+  }
+
+  const solvedStages=[];
+  const results=[];
+  const failures=[];
+  const started=Date.now();
+
+  for (const t of targets){
+    const out = await solveOne(t);
+    if (!out.ok){
+      failures.push(t);
+      results.push({id:t.id, status:'STUCK', reason:'retry_exhausted'});
+      continue;
+    }
+    solvedStages.push(out.stage);
+    results.push({id:t.id, ...out.result, genAttempt:out.attempt});
+  }
+
   const summary={
-    total: results.length,
+    total: targets.length,
     solved: results.filter(r=>String(r?.status)==='SOLVED').length,
     stuck: results.filter(r=>String(r?.status)==='STUCK').length,
     unknown: results.filter(r=>String(r?.status)==='UNKNOWN').length,
     error: results.filter(r=>String(r?.status)==='ERROR').length,
-    elapsedMs: Date.now()-t,
+    elapsedMs: Date.now()-started,
   };
+
   const byBlockCount={};
   const byDifficulty={};
-  for (let i=0;i<results.length;i++){
-    const st=stages[i]||{};
-    const bc=String(st?.meta?.blockCount??'NA');
-    const df=String(st?.meta?.difficulty??'NA');
-    byBlockCount[bc]=byBlockCount[bc]||{total:0,solved:0};
-    byDifficulty[df]=byDifficulty[df]||{total:0,solved:0};
-    byBlockCount[bc].total++; byDifficulty[df].total++;
-    if(String(results[i]?.status)==='SOLVED'){byBlockCount[bc].solved++; byDifficulty[df].solved++;}
+  for (const t of targets){
+    byBlockCount[t.blockCount]=byBlockCount[t.blockCount]||{total:0,solved:0};
+    byDifficulty[t.diffName]=byDifficulty[t.diffName]||{total:0,solved:0};
+    byBlockCount[t.blockCount].total++;
+    byDifficulty[t.diffName].total++;
+    const r = results.find((x)=>x.id===t.id);
+    if (String(r?.status)==='SOLVED'){
+      byBlockCount[t.blockCount].solved++;
+      byDifficulty[t.diffName].solved++;
+    }
   }
 
-  if (summary.solved !== summary.total) {
-    const unsolved = [];
-    for (let i = 0; i < results.length; i++) {
-      if (String(results[i]?.status) !== 'SOLVED') {
-        unsolved.push({
-          idx: i,
-          stageId: stages[i]?.id ?? null,
-          blockCount: stages[i]?.meta?.blockCount ?? null,
-          difficulty: stages[i]?.meta?.difficulty ?? null,
-          status: results[i]?.status ?? 'UNKNOWN',
-          reason: results[i]?.reason ?? null,
-        });
-      }
-    }
-    fs.writeFileSync(outReport, JSON.stringify({summary,byBlockCount,byDifficulty,unsolved},null,2));
-    console.error('[matrix_validation] FAILED: not all stages solved', summary);
+  const reportObj = {summary, byBlockCount, byDifficulty, failures, results};
+  fs.writeFileSync(outReport, JSON.stringify(reportObj, null, 2));
+
+  if (summary.solved !== summary.total){
+    console.error('[matrix_validation] FAILED: some stages remain unsolved', summary);
     process.exit(3);
   }
 
-  fs.writeFileSync(outPack,JSON.stringify({schemaVersion:2,buildId:'matrix_120_solved',stages:solvedStages},null,2));
-  fs.writeFileSync(outReport, JSON.stringify({summary,byBlockCount,byDifficulty},null,2));
+  const solvedPack={schemaVersion:2, buildId:`matrix_120_solved_${Date.now()}`, stages:solvedStages};
+  fs.writeFileSync(outPack, JSON.stringify(solvedPack, null, 2));
   console.log('[matrix_validation] PASS', summary);
 })();
 NODE

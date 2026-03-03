@@ -1,6 +1,7 @@
 {
   "fixed21": {
     "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
+    "validationTrust": "UNTRUSTED_ENGINE_BLOCKED",
     "summary": {
       "total": 3,
       "solved": 0,
@@ -12,6 +13,7 @@
   },
   "matrix120": {
     "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
+    "validationTrust": "UNTRUSTED_ENGINE_BLOCKED",
     "summary": {
       "total": 120,
       "solved": 0,

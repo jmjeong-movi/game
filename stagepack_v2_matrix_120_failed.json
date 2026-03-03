@@ -1,8 +1,16 @@
 {
-  "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
-  "validationTrust": "UNTRUSTED_ENGINE_BLOCKED",
-  "enginePath": "/workspace/game/_mstage/stage-tool-v9/src/validator_tools/engine/sim_equivalent.js",
-  "results": [
+  "summary": {
+    "total": 120,
+    "unsolved": 121
+  },
+  "failed": [
+    {
+      "stageId": -1,
+      "status": "UNSOLVED",
+      "reason": "TRUST_GATE_BLOCKED:UNTRUSTED_ENGINE_BLOCKED",
+      "failStep": -1,
+      "opsUsed": []
+    },
     {
       "stageId": 1,
       "status": "UNSOLVED",
@@ -843,10 +851,5 @@
       "failStep": -1,
       "opsUsed": []
     }
-  ],
-  "summary": {
-    "total": 120,
-    "solved": 0,
-    "unsolved": 120
-  }
+  ]
 }

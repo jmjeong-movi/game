@@ -22,5 +22,6 @@
     "unsolvedReasons": {
       "SIM_ENGINE_NOT_REAL": 120
     }
-  }
+  },
+  "nextAction": "LINK_REAL_SIM_ENGINE_AND_REVALIDATE"
 }

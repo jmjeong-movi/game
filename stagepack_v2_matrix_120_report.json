@@ -1,7 +1,7 @@
 {
   "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
   "validationTrust": "UNTRUSTED_ENGINE_BLOCKED",
-  "enginePath": "/workspace/game/_mstage/stage-tool-v9/src/validator_tools/engine/sim_equivalent.js",
+  "enginePath": "/workspace/game/_xstage/stage-tool-v9/src/validator_tools/engine/sim_equivalent.js",
   "results": [
     {
       "stageId": 1,

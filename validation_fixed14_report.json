@@ -4,7 +4,7 @@
     "validationTrust": "REAL_ENGINE",
     "engineInfo": {
       "source": "external-module",
-      "detail": "/workspace/game/_sstage/stage-tool-v9/src/validator_tools/engine/real_game_validator.js"
+      "detail": "/workspace/game/_tstage/stage-tool-v9/src/validator_tools/engine/real_game_validator.js"
     },
     "summary": {
       "total": 3,
@@ -18,7 +18,7 @@
     "validationTrust": "REAL_ENGINE",
     "engineInfo": {
       "source": "external-module",
-      "detail": "/workspace/game/_sstage/stage-tool-v9/src/validator_tools/engine/real_game_validator.js"
+      "detail": "/workspace/game/_tstage/stage-tool-v9/src/validator_tools/engine/real_game_validator.js"
     },
     "summary": {
       "total": 120,

@@ -1,12 +1,18 @@
 {
   "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
   "validationTrust": "REAL_ENGINE",
-  "enginePath": "/workspace/game/_sstage/stage-tool-v9/src/validator_tools/engine/sim_equivalent.js",
+  "enginePath": "/workspace/game/_tstage/stage-tool-v9/src/validator_tools/engine/sim_equivalent.js",
   "engineInfo": {
     "source": "external-module",
-    "detail": "/workspace/game/_sstage/stage-tool-v9/src/validator_tools/engine/real_game_validator.js"
+    "detail": "/workspace/game/_tstage/stage-tool-v9/src/validator_tools/engine/real_game_validator.js"
   },
-  "results": [
+  "summary": {
+    "total": 3,
+    "solved": 3,
+    "unsolved": 0
+  },
+  "unsolvedReasonCounts": {},
+  "sampledResults": [
     {
       "stageId": 1,
       "status": "SOLVED",
@@ -37,10 +43,5 @@
         "ammo_redistribute"
       ]
     }
-  ],
-  "summary": {
-    "total": 3,
-    "solved": 3,
-    "unsolved": 0
-  }
+  ]
 }

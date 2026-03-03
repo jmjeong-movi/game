@@ -1,0 +1,35 @@
+{
+  "fixed21": {
+    "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
+    "validationTrust": "REAL_ENGINE",
+    "engineInfo": {
+      "source": "external-module",
+      "detail": "/workspace/game/_rstage/stage-tool-v9/src/validator_tools/engine/real_game_validator.js"
+    },
+    "summary": {
+      "total": 3,
+      "solved": 0,
+      "unsolved": 3
+    },
+    "unsolvedReasons": {
+      "REAL_ENGINE_ADAPTER_CONNECTED_RUNTIME_PENDING": 3
+    }
+  },
+  "matrix120": {
+    "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
+    "validationTrust": "REAL_ENGINE",
+    "engineInfo": {
+      "source": "external-module",
+      "detail": "/workspace/game/_rstage/stage-tool-v9/src/validator_tools/engine/real_game_validator.js"
+    },
+    "summary": {
+      "total": 120,
+      "solved": 0,
+      "unsolved": 120
+    },
+    "unsolvedReasons": {
+      "REAL_ENGINE_ADAPTER_CONNECTED_RUNTIME_PENDING": 120
+    }
+  },
+  "nextAction": "IMPLEMENT runtime-equivalent solver simulation inside real_game_validator.js"
+}

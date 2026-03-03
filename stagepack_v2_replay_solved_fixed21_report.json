@@ -1,30 +1,30 @@
 {
   "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
-  "validationTrust": "UNTRUSTED_ENGINE_BLOCKED",
-  "enginePath": "/workspace/game/_zstage/stage-tool-v9/src/validator_tools/engine/sim_equivalent.js",
+  "validationTrust": "REAL_ENGINE",
+  "enginePath": "/workspace/game/_rstage/stage-tool-v9/src/validator_tools/engine/sim_equivalent.js",
   "engineInfo": {
-    "source": "builtin-failsafe",
-    "detail": "REAL_GAME_VALIDATOR_MODULE not configured"
+    "source": "external-module",
+    "detail": "/workspace/game/_rstage/stage-tool-v9/src/validator_tools/engine/real_game_validator.js"
   },
   "results": [
     {
       "stageId": 1,
       "status": "UNSOLVED",
-      "reason": "SIM_ENGINE_NOT_REAL",
+      "reason": "REAL_ENGINE_ADAPTER_CONNECTED_RUNTIME_PENDING",
       "failStep": -1,
       "opsUsed": []
     },
     {
       "stageId": 2,
       "status": "UNSOLVED",
-      "reason": "SIM_ENGINE_NOT_REAL",
+      "reason": "REAL_ENGINE_ADAPTER_CONNECTED_RUNTIME_PENDING",
       "failStep": -1,
       "opsUsed": []
     },
     {
       "stageId": 3,
       "status": "UNSOLVED",
-      "reason": "SIM_ENGINE_NOT_REAL",
+      "reason": "REAL_ENGINE_ADAPTER_CONNECTED_RUNTIME_PENDING",
       "failStep": -1,
       "opsUsed": []
     }

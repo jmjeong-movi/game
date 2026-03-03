@@ -1073,6 +1073,22 @@ const activeSupplySum = useMemo(() => {
         const row: any = { stageId: id };
         if (r0) Object.assign(row, r0);
         row.supplySanitizedRemoved = supplyRemoved;
+        if (String(row?.status) !== 'SOLVED') {
+          const err: any = new Error(`Export blocked: stage ${id} is not SOLVED (status=${row?.status ?? 'UNKNOWN'})`);
+          err.details = {
+            stageId: id,
+            status: row?.status ?? 'UNKNOWN',
+            reason: row?.reason ?? null,
+            failEquipStep: row?.failEquipStep ?? null,
+            nextHint: row?.nextHint ?? null,
+            remainingTiles: row?.remainingTiles ?? null,
+            clicked: row?.clicked ?? null,
+            rounds: row?.rounds ?? null,
+            shotsFired: row?.shotsFired ?? null,
+            supplySanitizedRemoved: supplyRemoved,
+          };
+          throw err;
+        }
         reportResults.push(row);
         outStages.push(fixedStage);
 

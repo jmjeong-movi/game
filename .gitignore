@@ -1,0 +1,7 @@
+# Generated validation artifacts (large / reproducible)
+stagepack_v2_matrix_120.json
+stagepack_v2_matrix_120_report.json
+stagepack_v2_replay_solved_fixed21_validation.json
+stagepack_v2_solver_only.json
+report_stagepack_v2_solver_only.json
+.issue5_check_result.json

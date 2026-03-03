@@ -7,6 +7,11 @@ trap 'rm -rf "$TMP"' EXIT
 unzip -oq "$ROOT/stage-tool-v9_patched_src_fixed21.zip" -d "$TMP"
 CLI="$TMP/stage-tool-v9/src/validator_tools/cli.js"
 
+if [ ! -f "$CLI" ]; then
+  echo "validator CLI not found in extracted zip: $CLI" >&2
+  exit 2
+fi
+
 node - <<'NODE' "$ROOT/stagepack_v2_replay_solved_fixed21.json" "$CLI" "$ROOT/stagepack_v2_replay_solved_fixed21_validation.json"
 const fs=require('fs');
 const [packFile,cliFile,outFile]=process.argv.slice(2);
@@ -32,6 +37,16 @@ const fs=require('fs');
 const [cliFile,outPack,outReport]=process.argv.slice(2);
 const cli=require(cliFile);
 const COLORS=['R','O','Y','G','B','P','M','C','S','L','K','W'];
+const ALLOWED_SUPPLY_TYPES = new Set(['BLOCK_SMALL','BLOCK_NORMAL','BLOCK_HIDDEN','BLOCK_LARGE','BLOCK_LARGE_HIDDEN']);
+
+function sanitizeSupplyPagesToBlocksOnly(stage){
+  const pages=Array.isArray(stage?.supply?.pages)?stage.supply.pages:[];
+  for (const page of pages){
+    const objects=Array.isArray(page?.objects)?page.objects:[];
+    page.objects = objects.filter((o)=>ALLOWED_SUPPLY_TYPES.has(String(o?.type ?? '')));
+  }
+}
+
 function baseStage(id, blockCount, diffName, di, idx){
   const o=[];
   o.push({type:'BLOCK_SMALL',x:0,y:9,color:'R',layer:0});
@@ -55,6 +70,10 @@ function baseStage(id, blockCount, diffName, di, idx){
       po.push({type:t,x,y,color:c,layer:0});
     }
     po.push({type:'BLOCK_LARGE',x:8,y:8,color:COLORS[(p+2)%COLORS.length],hp:30,layer:0});
+    // intentionally add disallowed supply objects to verify sanitizer
+    po.push({type:'CHAIN_BARRIER',x:0,y:0,color:'C',layer:0});
+    po.push({type:'PILLAR',x:1,y:0,h:2,layer:0});
+    po.push({type:'SPAWNER_BOX',x:2,y:0,hp:4,spawn:{poolColors:['R']},layer:0});
     pages.push({objects:po});
   }
   return {
@@ -71,12 +90,17 @@ function baseStage(id, blockCount, diffName, di, idx){
   const diffs=[['easy',3],['normal',6],['hard',9]];
   const stages=[];
   let id=1;
-  for (const bc of bcs) for (const [name,di] of diffs) for(let i=0;i<10;i++) stages.push(baseStage(id++,bc,name,di,i));
+  for (const bc of bcs) for (const [name,di] of diffs) for(let i=0;i<10;i++) {
+    const st = baseStage(id++,bc,name,di,i);
+    sanitizeSupplyPagesToBlocksOnly(st);
+    stages.push(st);
+  }
   const pack={schemaVersion:2,buildId:'matrix_120',stages};
   fs.writeFileSync(outPack,JSON.stringify(pack,null,2));
 
   const t=Date.now();
-  const {report}=await cli.repairStagePack(pack,8000,20,30,{enabled:true,depth:4,window:6,beam:4,simSteps:1000},undefined);
+  const {pack: solvedPack, report}=await cli.repairStagePack(pack,50000,120,180,{enabled:true,depth:10,window:12,beam:10,simSteps:5000},undefined);
+  const solvedStages = Array.isArray(solvedPack?.stages) ? solvedPack.stages : stages;
   const results=Array.isArray(report?.results)?report.results:[];
   const summary={
     total: results.length,
@@ -97,8 +121,29 @@ function baseStage(id, blockCount, diffName, di, idx){
     byBlockCount[bc].total++; byDifficulty[df].total++;
     if(String(results[i]?.status)==='SOLVED'){byBlockCount[bc].solved++; byDifficulty[df].solved++;}
   }
+
+  if (summary.solved !== summary.total) {
+    const unsolved = [];
+    for (let i = 0; i < results.length; i++) {
+      if (String(results[i]?.status) !== 'SOLVED') {
+        unsolved.push({
+          idx: i,
+          stageId: stages[i]?.id ?? null,
+          blockCount: stages[i]?.meta?.blockCount ?? null,
+          difficulty: stages[i]?.meta?.difficulty ?? null,
+          status: results[i]?.status ?? 'UNKNOWN',
+          reason: results[i]?.reason ?? null,
+        });
+      }
+    }
+    fs.writeFileSync(outReport, JSON.stringify({summary,byBlockCount,byDifficulty,unsolved},null,2));
+    console.error('[matrix_validation] FAILED: not all stages solved', summary);
+    process.exit(3);
+  }
+
+  fs.writeFileSync(outPack,JSON.stringify({schemaVersion:2,buildId:'matrix_120_solved',stages:solvedStages},null,2));
   fs.writeFileSync(outReport, JSON.stringify({summary,byBlockCount,byDifficulty},null,2));
-  console.log('[matrix_validation]', summary);
+  console.log('[matrix_validation] PASS', summary);
 })();
 NODE
 

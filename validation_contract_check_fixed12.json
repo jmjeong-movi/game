@@ -5,6 +5,7 @@
     "zip_has::stage-tool-v9/src/validator_tools/engine/sim_equivalent.js": true,
     "zip_has::stage-tool-v9/scripts/run_requested_validations.sh": true,
     "zip_has::stage-tool-v9/scripts/real_engine_preflight.sh": true,
+    "zip_has::stage-tool-v9/scripts/validate_real_engine_connected.sh": true,
     "zip_has::stage-tool-v9/src/validator_tools/engine/README_REAL_ENGINE.md": true,
     "zip_has::stage-tool-v9/src/validator_tools/engine/real_game_validator.js": true
   },

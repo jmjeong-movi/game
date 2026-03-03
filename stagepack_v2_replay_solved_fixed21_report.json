@@ -1,10 +1,10 @@
 {
   "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
   "validationTrust": "REAL_ENGINE",
-  "enginePath": "/workspace/game/_rstage/stage-tool-v9/src/validator_tools/engine/sim_equivalent.js",
+  "enginePath": "/workspace/game/_qstage/stage-tool-v9/src/validator_tools/engine/sim_equivalent.js",
   "engineInfo": {
     "source": "external-module",
-    "detail": "/workspace/game/_rstage/stage-tool-v9/src/validator_tools/engine/real_game_validator.js"
+    "detail": "/workspace/game/_qstage/stage-tool-v9/src/validator_tools/engine/real_game_validator.js"
   },
   "results": [
     {

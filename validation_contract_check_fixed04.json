@@ -1,0 +1,9 @@
+{
+  "checks": {
+    "zip_has::stage-tool-v9/src/validator_tools/cli.js": true,
+    "zip_has::stage-tool-v9/src/validator_tools/game/StageCompiler.js": true,
+    "zip_has::stage-tool-v9/src/validator_tools/engine/sim_equivalent.js": true,
+    "zip_has::stage-tool-v9/scripts/run_requested_validations.sh": true
+  },
+  "overall": "PASS"
+}

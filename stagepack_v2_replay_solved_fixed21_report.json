@@ -1,0 +1,31 @@
+{
+  "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
+  "results": [
+    {
+      "stageId": 1,
+      "status": "UNSOLVED",
+      "reason": "SIM_ENGINE_NOT_LINKED",
+      "failStep": -1,
+      "opsUsed": []
+    },
+    {
+      "stageId": 2,
+      "status": "UNSOLVED",
+      "reason": "SIM_ENGINE_NOT_LINKED",
+      "failStep": -1,
+      "opsUsed": []
+    },
+    {
+      "stageId": 3,
+      "status": "UNSOLVED",
+      "reason": "SIM_ENGINE_NOT_LINKED",
+      "failStep": -1,
+      "opsUsed": []
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "solved": 0,
+    "unsolved": 3
+  }
+}

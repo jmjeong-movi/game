@@ -1,0 +1,24 @@
+{
+  "fixed21": {
+    "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
+    "summary": {
+      "total": 3,
+      "solved": 0,
+      "unsolved": 3
+    },
+    "unsolvedReasons": {
+      "SIM_ENGINE_NOT_LINKED": 3
+    }
+  },
+  "matrix120": {
+    "validationMode": "SIM_EQUIVALENT_SINGLE_PATH",
+    "summary": {
+      "total": 120,
+      "solved": 0,
+      "unsolved": 120
+    },
+    "unsolvedReasons": {
+      "SIM_ENGINE_NOT_LINKED": 120
+    }
+  }
+}
